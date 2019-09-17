@@ -23,7 +23,6 @@ import (
 	"errors"
 	"io"
 	"io/ioutil"
-	"os"
 
 	"www.velocidex.com/golang/oleparse"
 	"www.velocidex.com/golang/velociraptor/constants"
@@ -53,7 +52,7 @@ func _OLEVBAPlugin_ParseFile(
 
 	fd, err := accessor.Open(filename)
 	if err != nil {
-
+		return nil, err
 	}
 	defer fd.Close()
 
@@ -74,7 +73,7 @@ func _OLEVBAPlugin_ParseFile(
 	}
 
 	if string(signature) == oleparse.OLE_SIGNATURE {
-		fd.Seek(0, os.SEEK_SET)
+		fd.Seek(0, io.SeekStart)
 		data, err := ioutil.ReadAll(io.LimitReader(fd, constants.MAX_MEMORY))
 		if err != nil {
 			return nil, err
